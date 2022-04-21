@@ -1,2 +1,2 @@
 from .users import User
-from .voting import Voting
+from .votes import Voting
