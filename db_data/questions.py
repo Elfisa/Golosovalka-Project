@@ -1,9 +1,7 @@
 import sqlalchemy
 from sqlalchemy import orm
-from werkzeug.security import check_password_hash, generate_password_hash
 from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
-import datetime as dt
 
 
 class Question(SqlAlchemyBase, SerializerMixin):
@@ -15,6 +13,6 @@ class Question(SqlAlchemyBase, SerializerMixin):
     settings = sqlalchemy.Column(sqlalchemy.JSON)  # БЕЗ ПОНЯТИЯ КАКОЙ ДОЛЖЕН БЫТЬ ТИП
 
     vote_id = orm.relation(sqlalchemy.Integer, sqlalchemy.ForeignKey('votes.id'))
-    vote = orm.relation('Vote')  # nahuya?
+    vote = orm.relation('Vote')  # зочем?
 
     answers = orm.relation('Answer', back_populates='question')

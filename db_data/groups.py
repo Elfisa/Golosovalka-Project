@@ -1,10 +1,7 @@
 import sqlalchemy
 from sqlalchemy import orm
-from werkzeug.security import check_password_hash, generate_password_hash
 from .db_session import SqlAlchemyBase
-from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
-import datetime as dt
 
 votes_to_groups = sqlalchemy.Table(
     'votes_to_groups',

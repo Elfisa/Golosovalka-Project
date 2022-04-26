@@ -1,2 +1,5 @@
 from .users import User
-from .votes import Voting
+from .groups import Group
+from .votes import Vote
+from .questions import Question
+from .answers import Answer

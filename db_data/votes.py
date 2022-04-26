@@ -1,8 +1,6 @@
 import sqlalchemy
 from sqlalchemy import orm
-from werkzeug.security import check_password_hash, generate_password_hash
 from .db_session import SqlAlchemyBase
-from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 import datetime as dt
 
@@ -35,7 +33,3 @@ class Vote(SqlAlchemyBase, SerializerMixin):
                           backref="votes")
 
     questions = orm.relation('Question', back_populates='vote')
-
-    @property
-    def is_admin(self):
-        return True if self.role == 'admin' else False
