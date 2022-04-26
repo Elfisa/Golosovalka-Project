@@ -23,7 +23,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     group = orm.relation('Group')
 
     created_votes = orm.relation('Voting', back_populates='author')
-    passed_votes = orm.relation("Voting",  # мне нужно просто получать данные, типо я не буду ниче сюда добавлять...
+    passed_votes = orm.relation("Voting",
                                 secondary="user_to_voting",
                                 backref="users")
 
@@ -35,4 +35,8 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     @property
     def is_admin(self):
-        return True if self.role == ADMIN else False
+        return self.role == self.ADMIN
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR

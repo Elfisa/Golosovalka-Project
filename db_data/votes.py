@@ -26,10 +26,14 @@ class Vote(SqlAlchemyBase, SerializerMixin):
     stop_date = sqlalchemy.Column(sqlalchemy.DateTime, default=dt.datetime.now())
 
     author_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
-    author = orm.relation('User')  # author/user????
+    author = orm.relation('User')
 
-    voters = orm.relation("User",  # votes.voters.append(current.user)
+    voters = orm.relation("User",  # votes.voters.append(current_user)
                           secondary="user_to_voting",
+                          backref="votes")
+
+    groups = orm.relation("Group",
+                          secondary="user_to_groups",
                           backref="votes")
 
     questions = orm.relation('Question', back_populates='vote')

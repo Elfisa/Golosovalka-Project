@@ -30,10 +30,10 @@
           <li><a href="#" class="nav-link px-2 text-white">Текущие</a></li>
           <li><a href="#" class="nav-link px-2 text-white">Пройденные</a></li>
           <li><a href="#" class="nav-link px-2 text-white">Результаты</a></li>
-              {% if current_user.is_admin or current_user.is_moderator %}
-                <li><a href="#" class="nav-link px-2 text-white">Скрытые</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Мои голосования</a></li>
-              {% endif %}
+          {% if current_user.is_admin or current_user.is_moderator %}
+            <li><a href="#" class="nav-link px-2 text-white">Скрытые</a></li>
+            <li><a href="#" class="nav-link px-2 text-white">Мои голосования</a></li>
+          {% endif %}
         </ul>
 
         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
@@ -43,7 +43,7 @@
         <div class="text-end" align="right">
             {% if current_user.is_authenticated %}
                 <a href="/">
-                    <img src="static/imgs/1357.png" height="75">
+                    <img src="{{ curent_user.icon }}" height="75">
                 </a>
             {% else %}
                 <a href="login" type="button" class="btn btn-outline-light me-2">Войти</a>

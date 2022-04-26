@@ -12,4 +12,4 @@ class Answer(SqlAlchemyBase, SerializerMixin):
     icon = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     question_id = orm.relation(sqlalchemy.Integer, sqlalchemy.ForeignKey('questions.id'))
-    question = orm.relation('Question')  # зочем
+    question = orm.relation('Question')

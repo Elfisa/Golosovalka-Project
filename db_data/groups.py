@@ -2,6 +2,7 @@ import sqlalchemy
 from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
+from uuid import uuid1
 
 votes_to_groups = sqlalchemy.Table(
     'votes_to_groups',
@@ -18,6 +19,10 @@ class Group(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String)
-    token = sqlalchemy.Column(sqlalchemy.String, default=)
+    token = sqlalchemy.Column(sqlalchemy.String, default=uuid1())
 
     users = orm.relation('User', back_populates='group')
+
+    votes = orm.relation("Vote",
+                         secondary="votes_to_groups",
+                         backref="groups")
