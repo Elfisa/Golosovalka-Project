@@ -17,6 +17,10 @@ votes_to_groups = sqlalchemy.Table(
 class Group(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'groups'
 
+    STUDENT = 1
+    PARENT = 2
+    TEACHER = 3
+
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String)
     token = sqlalchemy.Column(sqlalchemy.String, default=uuid1())
@@ -26,3 +30,15 @@ class Group(SqlAlchemyBase, SerializerMixin):
     votes = orm.relation("Vote",
                          secondary="votes_to_groups",
                          backref="groups")
+
+    @property
+    def is_student(self):
+        return self.title == self.STUDENT
+
+    @property
+    def is_parent(self):
+        return self.title == self.PARENT
+
+    @property
+    def is_teacher(self):
+        return self.title == self.TEACHER

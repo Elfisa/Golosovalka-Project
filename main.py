@@ -13,6 +13,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('')
+
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -66,11 +71,11 @@ def reqister():
 
 @app.route('/')
 def run():
-    return render_template('header.html', current_user=flask_login.current_user)
+    return render_template('header.html')
 
 
 def main():
-    # db_session.global_init('db/mars_explorer.sqlite')
+    db_session.global_init('db/golosovalka.sqlite')
     app.run()
 
 
