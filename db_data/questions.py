@@ -10,9 +10,9 @@ class Question(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     text = sqlalchemy.Column(sqlalchemy.Text)
     type = sqlalchemy.Column(sqlalchemy.Integer)
-    settings = sqlalchemy.Column(sqlalchemy.JSON)
+    settings = sqlalchemy.Column(sqlalchemy.JSON, nullable=True)
 
-    vote_id = orm.relation(sqlalchemy.Integer, sqlalchemy.ForeignKey('votes.id'))
+    vote_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('votes.id'))
     vote = orm.relation('Vote')
 
     answers = orm.relation('Answer', back_populates='question')

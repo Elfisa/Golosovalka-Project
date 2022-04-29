@@ -7,9 +7,11 @@ from uuid import uuid1
 votes_to_groups = sqlalchemy.Table(
     'votes_to_groups',
     SqlAlchemyBase.metadata,
-    sqlalchemy.Column('votes', sqlalchemy.Integer,
+    sqlalchemy.Column('votes',
+                      sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('votes.id')),
-    sqlalchemy.Column('groups', sqlalchemy.Integer,
+    sqlalchemy.Column('groups',
+                      sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('groups.id'))
 )
 
@@ -23,13 +25,13 @@ class Group(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String)
-    token = sqlalchemy.Column(sqlalchemy.String, default=uuid1())
-
-    users = orm.relation('User', back_populates='group')
+    token = sqlalchemy.Column(sqlalchemy.String, default=str(uuid1()))
 
     votes = orm.relation("Vote",
                          secondary="votes_to_groups",
-                         backref="groups")
+                         back_populates="groups")
+
+    users = orm.relation('User', back_populates='group')
 
     @property
     def is_student(self):

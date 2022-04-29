@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for vote in votes%}
+<div class="col-md6 border rounded">
+    <h2>{{vote.title}}</h2>
+    <div>
+        {{vote.description}}
+        <img src="{{vote.icon}}" alt="">
+    </div>
+    <div>
+        Начало: {{vote.start_date}} До: {{vote.stop_date}}
+    </div>
+    {% if current_user.is_authenticated and current_user == vote.author %}
+    <div>
+        <a href="/votes/{{ vote.id }}" class="btn" style="background-color: #9ACD32">
+            Изменить
+        </a>
+        <a href="/votes_delete/{{ vote.id }}" class="btn btn-warning">
+            Удалить
+        </a>
+    </div>
+{% endif %}
+</div>
+{% endfor %}
+{% endblock %}

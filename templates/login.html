@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "forms_base.html" %}
 
 {% block content %}
-    <h1>Авторизация</h1>
-    <form action="" method="post">
+    <center><h1>Авторизация</h1></center>
+    <form action="" method="post" class="align-middle text-white">
         {{ form.hidden_tag() }}
         <p>
             {{ form.email.label }}<br>
@@ -23,7 +23,7 @@
             {% endfor %}
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <p>{{ form.submit(type="submit", class="btn", style="background-color: #9ACD32") }}</p>
         <div>{{ message }}</div>
     </form>
 {% endblock %}

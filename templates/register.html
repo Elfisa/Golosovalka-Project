@@ -1,52 +1,45 @@
-{% extends "base.html" %}
+{% extends "forms_base.html" %}
 
 {% block content %}
-<h1>Регистрация</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
+<center><h1>Регистрация</h1></center>
+<div class="img-blur" style="width: 50%; float:right">
+    <img class="img-fluid" src="static/imgs/hero-section.png" width="100%">
+</div>
+<div style="width: 50%; float:left">
+<form action="" method="post" class="text-white">
+    <input id="csrf_token" name="csrf_token" type="hidden" value="Ijg5Y2ZhMzcxMGI0N2Y4YWI1YjNlNDkyMjNjYjU1MzBhZjljMTBjYTki.YmtZxg.5mWGqZFJgdZlLFGylg5fkKPIMZ0">
     <p>
-        {{ form.email.label }}<br>
-        {{ form.email(class="form-control", type="email") }}<br>
-        {% for error in form.email.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+        <label for="email">Email</label><br>
+        <input class="form-control" id="email" name="email" required="" type="email" value=""><br>
+
     </p>
     <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password") }}<br>
-        {% for error in form.password.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+        <label for="password">Пароль</label><br>
+        <input class="form-control" id="password" name="password" required="" type="password" value=""><br>
+
     </p>
     <p>
-        {{ form.password_again.label }}<br>
-        {{ form.password_again(class="form-control", type="password") }}<br>
-        {% for error in form.password_again.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+        <label for="password_again">Повторите пароль</label><br>
+        <input class="form-control" id="password_again" name="password_again" required="" type="password" value=""><br>
+
     </p>
-    <div class="form-group">
-        <label for="form-check">Укажите пол</label>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="sex" id="male" value="male" checked>
-            <label class="form-check-label" for="male">
-                Мужской
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="sex" id="female" value="female">
-            <label class="form-check-label" for="female">
-                Женский
-            </label>
-        </div>
-    </div><br>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
+    <p>
+        <label for="role">Вы...</label><br>
+
+
+                <input id="role-0" name="role" required="" type="radio" value="1">
+                <label for="role-0">Ученик</label>
+
+
+
+                <input id="role-1" name="role" required="" type="radio" value="2">
+                <label for="role-1">Родитель</label>
+
+
+
+    </p>
+    <p><input class="btn" id="submit" name="submit" style="background-color: #9ACD32" type="submit" value="Зарегистрироваться"></p>
+
 </form>
+</div>
 {% endblock %}

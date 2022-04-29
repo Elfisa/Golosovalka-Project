@@ -1,9 +1,9 @@
 import flask_login
-from flask import redirect, render_template, jsonify, make_response, Flask
+from flask import redirect, render_template, jsonify, make_response, Flask, session
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_restful import Api, Resource, abort
 from db_data import db_session
-from db_data.__all_models import User
+from db_data.__all_models import User, Vote
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 
@@ -11,11 +11,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('')
 
 
 @login_manager.user_loader
@@ -47,7 +42,7 @@ def login():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():
+def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -71,7 +66,13 @@ def reqister():
 
 @app.route('/')
 def run():
-    return render_template('header.html')
+    db_sess = db_session.create_session()
+    return render_template('index.html', votes=db_sess.query(Vote).all())
+
+
+@app.route('/add_vote')
+def add_vote():
+    return render_template('index.html')
 
 
 def main():

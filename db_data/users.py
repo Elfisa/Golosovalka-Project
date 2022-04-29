@@ -19,13 +19,13 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     icon = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     role = sqlalchemy.Column(sqlalchemy.String, default=USER)
 
-    group_id = orm.relation(sqlalchemy.Integer, sqlalchemy.ForeignKey('groups.id'))
+    group_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('groups.id'))
     group = orm.relation('Group')
 
-    created_votes = orm.relation('Voting', back_populates='author')
-    passed_votes = orm.relation("Voting",
-                                secondary="user_to_voting",
-                                backref="users")
+    created_votes = orm.relation('Vote', back_populates='author')
+    passed_votes = orm.relation("Vote",
+                                secondary="users_to_votes",
+                                back_populates="voters")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

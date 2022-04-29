@@ -29,11 +29,11 @@ class Vote(SqlAlchemyBase, SerializerMixin):
     author = orm.relation('User')
 
     voters = orm.relation("User",  # votes.voters.append(current_user)
-                          secondary="user_to_voting",
-                          backref="votes")
+                          secondary="users_to_votes",
+                          back_populates="passed_votes")
 
     groups = orm.relation("Group",
-                          secondary="user_to_groups",
-                          backref="votes")
+                          secondary="votes_to_groups",
+                          back_populates="votes")
 
     questions = orm.relation('Question', back_populates='vote')
