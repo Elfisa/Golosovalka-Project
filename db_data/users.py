@@ -17,7 +17,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     icon = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    role = sqlalchemy.Column(sqlalchemy.String, default=USER)
+    role = sqlalchemy.Column(sqlalchemy.Integer, default=USER)
 
     group_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('groups.id'))
     group = orm.relation('Group')
@@ -35,8 +35,8 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     @property
     def is_admin(self):
-        return self.role == self.ADMIN
+        return int(self.role) == self.ADMIN
 
     @property
     def is_moderator(self):
-        return self.role == self.MODERATOR
+        return int(self.role) == self.MODERATOR

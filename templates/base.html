@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -21,46 +20,43 @@
 <body>
 <header class="p-3 text-white bg-dark">
     <div class="p-3 d-flex flex-wrap align-items-center justify-content-between">
-      <div class="d-inline-flex col-12 col-lg-auto me-lg-auto mb-2 mb-md-0">
-        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-            <img src="static/imgs/logo_1357.png" height="50">
-        </a>
-      </div>
-      <div class="d-flex align-items-center">
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-between mb-md-0">
-          <li><a href="#" class="nav-link px-2 text-white">Текущие голосования</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">Пройденные голосования</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">Результаты</a></li>
-          {% if current_user.is_authenticated and (current_user.is_admin or current_user.is_moderator) %}
-            <li><a href="#" class="nav-link px-2 text-white">Скрытые голосования</a></li>
-            <li><a href="#" class="nav-link px-2 text-white">Мои голосования</a></li>
-          {% endif %}
-        </ul>
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-            <input type="search" class="form-control form-control-dark" placeholder="Найти..." aria-label="Search">
-        </form>
-      </div>
-      <div class="d-inline-flex justify-content-between text-end">
-        {% if current_user.is_authenticated %}
-          {% if current_user.is_admin or current_user.is_moderator %}
-            <a href="register" type="button" class="btn" style="background-color: #9ACD32">Создать</a>
-          {% endif %}
-          <div class="flex-shrink-0 dropdown">
-            <a href="/" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="static/imgs/default.png" height="50" width="50" alt="static/imgs/default.png" class="rounded-circle">
+        <div class="d-inline-flex col-12 col-lg-auto me-lg-auto mb-2 mb-md-0">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <img src="static/imgs/logo_1357.png" height="50">
             </a>
-            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/logout">Выйти из аккаунта</a></li>
+        </div>
+        <div class="d-flex align-items-center">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-between mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-white">Текущие голосования</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Результаты голосований</a></li>
+                {% if current_user.is_authenticated and (current_user.is_admin or current_user.is_moderator) %}
+                <li><a href="#" class="nav-link px-2 text-white">Скрытые голосования</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Мои голосования</a></li>
+                {% endif %}
             </ul>
-        {% else %}
-            <a href="login" type="button" class="btn btn-outline-light me-2">Войти</a>
-            <a href="register" type="button" class="btn" style="background-color: #9ACD32">Зарегистрироваться</a>
-        {% endif %}
-      </div>
+        </div>
+        <div class="d-inline-flex justify-content-between text-end">
+            {% if current_user.is_authenticated %}
+            {% if current_user.is_admin or current_user.is_moderator %}
+            <a href="create/new" type="button" class="btn mx-4" style="display: inline-block; background-color: #9ACD32; height: 40px">Создать</a>
+            {% endif %}
+            <div class="flex-shrink-0 dropdown">
+                <a href="/" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="static/imgs/icon.png" height="60" width="60" alt="Аккаунт" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="color: #9ACD32">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/logout">Выйти из аккаунта</a></li>
+                </ul>
+                {% else %}
+                <a href="login" type="button" class="btn btn-outline-light me-2" style="margin-right: 20px">Войти</a>
+                <a href="register" type="button" class="btn" style="background-color: #9ACD32">Зарегистрироваться</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </header>
 <!-- Begin page content -->

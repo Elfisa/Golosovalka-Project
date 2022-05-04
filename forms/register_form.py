@@ -8,7 +8,6 @@ class RegisterForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    role = RadioField('Вы...', choices=[(Group.STUDENT, 'Ученик'), (Group.PARENT, 'Родитель')],
-                      validators=[DataRequired()])
+    group = RadioField('Вы...', choices=[(Group.STUDENT, 'Ученик'), (Group.PARENT, 'Родитель')])
 
     submit = SubmitField('Зарегистрироваться')

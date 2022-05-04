@@ -3,9 +3,10 @@ from flask import redirect, render_template, jsonify, make_response, Flask, sess
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_restful import Api, Resource, abort
 from db_data import db_session
-from db_data.__all_models import User, Vote
+from db_data.__all_models import User, Group, Vote, Question, Answer
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
+from forms.vote_form import VoteForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -46,28 +47,48 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
+            return render_template('registration.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('registration.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
-        user = User(
-            email=form.email.data
-        )
+        user = User()
+        group = db_sess.query(Group).filter(Group.title == form.group.data)
+        user.group_id = group.id
+        user.email = form.email.data
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form)
+    return render_template('registration.html', title='Регистрация', form=form)
 
 
 @app.route('/')
 def run():
     db_sess = db_session.create_session()
     return render_template('index.html', votes=db_sess.query(Vote).all())
+
+
+@app.route('/create/<vote_id>')
+def create(vote_id):
+    db_sess = db_session.create_session()
+    form = VoteForm()
+    if form.validate_on_submit():
+        vote = db_sess.query(Vote).filter(Vote.id == vote_id)
+        vote.title = form.title.data
+        vote.description = form.description.data
+        print(form.stop_date.data)
+        if form.add.data:
+            question = Question()
+            vote.questions.append(question)
+            return redirect(f'/create/add/{question.id}')
+
+    if vote_id == 'new':
+        vote_id = Vote().id
+    return render_template('create.html', form=form, vote=vote_id)
 
 
 @app.route('/add_vote')

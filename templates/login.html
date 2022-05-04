@@ -1,8 +1,9 @@
 {% extends "forms_base.html" %}
 
 {% block content %}
-    <center><h1>Авторизация</h1></center>
-    <form action="" method="post" class="align-middle text-white">
+<div class="flex-column self-align-center justify-content-center vh-100">
+    <div class="d-inline-flex w-100 mx-auto"><h1>Авторизация</h1></div>
+    <form action="" method="post" class="text-white">
         {{ form.hidden_tag() }}
         <p>
             {{ form.email.label }}<br>
@@ -26,4 +27,5 @@
         <p>{{ form.submit(type="submit", class="btn", style="background-color: #9ACD32") }}</p>
         <div>{{ message }}</div>
     </form>
+</div>
 {% endblock %}

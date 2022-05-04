@@ -2,14 +2,14 @@
 
 {% block content %}
 {% for vote in votes%}
-<div class="col-md6 border rounded">
-    <h2>{{vote.title}}</h2>
+<div class="col-md6 border border-secondary rounded-pill mt-4 p-5">
+    <h3>{{vote.title}}</h3>
     <div>
-        {{vote.description}}
+        <h6>{{vote.description}}</h6>
         <img src="{{vote.icon}}" alt="">
     </div>
     <div>
-        Начало: {{vote.start_date}} До: {{vote.stop_date}}
+        Начало: {{vote.formatted_start}}     До: {{vote.formatted_stop}}
     </div>
     {% if current_user.is_authenticated and current_user == vote.author %}
     <div>

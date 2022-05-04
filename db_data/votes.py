@@ -19,7 +19,7 @@ class Vote(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'votes'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.String)
+    title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     icon = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     description = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=dt.datetime.now())
@@ -37,3 +37,11 @@ class Vote(SqlAlchemyBase, SerializerMixin):
                           back_populates="votes")
 
     questions = orm.relation('Question', back_populates='vote')
+
+    @property
+    def formatted_start(self):
+        return self.start_date.strftime("%d/%m/%y %H:%M")
+
+    @property
+    def formatted_stop(self):
+        return self.stop_date.strftime("%d/%m/%y %H:%M")

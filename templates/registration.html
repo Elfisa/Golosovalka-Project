@@ -1,0 +1,53 @@
+{% extends "forms_base.html" %}
+
+{% block content %}
+<center><h1>Регистрация</h1></center>
+<div class="img-blur" style="width: 50%; float:right">
+    <img class="img-fluid" src="static/imgs/hero-section.png" width="100%">
+</div>
+<div style="width: 50%; float:left">
+    <form action="" method="post" class="text-white">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control", type="email") }}<br>
+            {% for error in form.email.errors %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password") }}<br>
+            {% for error in form.password.errors %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+        <p>
+            {{ form.password_again.label }}<br>
+            {{ form.password_again(class="form-control", type="password") }}<br>
+            {% for error in form.password_again.errors %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+        <p>
+            {{ form.group.label }}
+            {% for subfield in form.group %}
+            <tr>
+                <td>{{ subfield(required="required") }}</td>
+                <td>{{ subfield.label }}</td>
+            </tr>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn", style="background-color: #9ACD32") }}</p>
+        {{message}}
+
+    </form>
+</div>
+{% endblock %}

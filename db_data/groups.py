@@ -24,7 +24,7 @@ class Group(SqlAlchemyBase, SerializerMixin):
     TEACHER = 3
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.String)
+    title = sqlalchemy.Column(sqlalchemy.Integer)
     token = sqlalchemy.Column(sqlalchemy.String, default=str(uuid1()))
 
     votes = orm.relation("Vote",
@@ -35,12 +35,12 @@ class Group(SqlAlchemyBase, SerializerMixin):
 
     @property
     def is_student(self):
-        return self.title == self.STUDENT
+        return int(self.title) == self.STUDENT
 
     @property
     def is_parent(self):
-        return self.title == self.PARENT
+        return int(self.title) == self.PARENT
 
     @property
     def is_teacher(self):
-        return self.title == self.TEACHER
+        return int(self.title) == self.TEACHER

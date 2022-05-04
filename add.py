@@ -73,16 +73,17 @@ def add():
     db_sess.commit()
 
 
-users = db_sess.query(User).all()
+# vote = Vote()
+# vote.title = 'Голосование за самую симпатичную картинку.'
+# vote.description = 'Картинка? Картинка.'
+# author_id = 6
+# db_sess.add(vote)
+# db_sess.commit()
 
-vote = Vote()
-vote.title = 'Голосование за лучший сайт'
-vote.description = 'Выберите тот сайт, который нравится лично вам.'
-author_id = 5
-db_sess.add(vote)
-db_sess.commit()
-
-
-
+# for user in db_sess.query(User).filter((User.role == User.MODERATOR) | (User.role == User.ADMIN)):
+#     print(user.id)
 # for user in users:
 #     user.icon = 'static/imgs/default.png'
+
+user = db_sess.query(User).filter(User.id == 6).first()
+print(user.is_moderator)
