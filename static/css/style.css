@@ -1,3 +1,7 @@
+body {
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
 form {
     margin-top: 10%;
     margin-left: auto;
@@ -7,4 +11,8 @@ form {
     border: 1px solid green;
     border-radius: 5px;
     padding: 10px;
+}
+
+.green_btn {
+    background-color: #9ACD32;
 }
