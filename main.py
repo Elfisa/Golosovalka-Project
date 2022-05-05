@@ -1,4 +1,3 @@
-import flask_login
 from flask import redirect, render_template, jsonify, make_response, Flask, session
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_restful import Api, Resource, abort
@@ -7,6 +6,7 @@ from db_data.__all_models import User, Group, Vote, Question, Answer
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.vote_form import VoteForm
+from forms.question_form import QuestionForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -72,28 +72,36 @@ def run():
     return render_template('index.html', votes=db_sess.query(Vote).all())
 
 
-@app.route('/create/<vote_id>')
+@app.route('/create/<vote_id>', methods=['GET', 'POST'])
 def create(vote_id):
     db_sess = db_session.create_session()
     form = VoteForm()
     if form.validate_on_submit():
-        vote = db_sess.query(Vote).filter(Vote.id == vote_id)
+        print(form.stop_date.data)
+        print(vote_id)
+        vote = db_sess.query(Vote).get(vote_id)
         vote.title = form.title.data
         vote.description = form.description.data
-        print(form.stop_date.data)
+        db_sess.commit()
         if form.add.data:
             question = Question()
+            db_sess.add(question)
             vote.questions.append(question)
-            return redirect(f'/create/add/{question.id}')
-
+            db_sess.commit()
+            return redirect(f'/create/{vote.id}/add/{question.id}')
+        return redirect('/')
     if vote_id == 'new':
-        vote_id = Vote().id
-    return render_template('create.html', form=form, vote=vote_id)
+        vote = Vote()
+        db_sess.add(vote)
+        db_sess.commit()
+        vote_id = vote.id
+    return render_template('create.html', form=form, vote_id=vote_id)
 
 
-@app.route('/add_vote')
-def add_vote():
-    return render_template('index.html')
+@app.route('/create/<vote_id>/add_question/<question_id>', methods=['GET', 'POST'])
+def add_question(vote_id, question_id):
+    form = QuestionForm()
+    return render_template('add_question.html', form=form)
 
 
 def main():
