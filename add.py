@@ -84,6 +84,6 @@ def add():
 #     print(user.id)
 # for user in users:
 #     user.icon = 'static/imgs/default.png'
-
-user = db_sess.query(User).filter(User.id == 6).first()
-print(user.is_moderator)
+for vote in db_sess.query(Vote).all():
+    print(vote.title)
+    print(1)
