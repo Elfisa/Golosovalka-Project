@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form action="" method="post" class="mt-3">
+<form action="" method="post" class="mt-3" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
         {{ form.text.label }}<br>
@@ -13,10 +13,9 @@
         {% endfor %}
     </p>
     <p>
-        {{ form.file.label }}
-        {{ form.file }}
-        {{ if
-        {% for error in form.file.errors %}
+        {{ form.img.label }}
+        {{ form.img }}
+        {% for error in form.img.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
@@ -25,6 +24,5 @@
     <p>{{ form.submit(type="submit", class="btn dark_green_btn btn-lg") }}</p>
     {% block detail %}{% endblock %}
     {{message}}
-
 </form>
 {% endblock %}

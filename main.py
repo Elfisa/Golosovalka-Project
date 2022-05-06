@@ -1,8 +1,12 @@
 import datetime
+import os
+from PIL import Image
+
 import flask_login
-from flask import redirect, render_template, jsonify, make_response, Flask, session, url_for
+from flask import redirect, render_template, jsonify, make_response, Flask, session, url_for, Blueprint
 from flask_login import LoginManager, login_required, login_user, logout_user
-from flask_restful import Api, Resource, abort
+from werkzeug.utils import secure_filename
+
 from db_data import db_session
 from db_data.__all_models import User, Group, Vote, Question, Answer
 from forms.login_form import LoginForm
@@ -13,8 +17,47 @@ from forms.add_answer_form import AddAnswerForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOAD_FOLDER'] = 'imgs'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+blueprint = Blueprint(
+    'main',
+    __name__,
+    template_folder='templates'
+)
+
+
+def resize(file_path, max_size=300, max_height=False):
+    img = Image.open(file_path)
+    width, height = img.size
+    _max_size = max(width, height)
+    if max_height:
+        img = img.resize(
+            (round(width / max_size),
+             round(height / max_size)),
+            Image.ANTIALIAS
+        )
+    elif _max_size > max_size:
+        img = img.resize(
+            (round(width / _max_size * max_size),
+             round(height / _max_size * max_size)),
+            Image.ANTIALIAS
+        )
+        img.save(file_path)
+
+
+def get_image(form):
+    img = form.img.data
+    f_name = secure_filename(img.filename)
+    i = 0
+    while os.path.exists(os.path.join('static', 'imgs', f_name)):
+        f_name = f'{i}-{f_name}'
+        i += 1
+    path_file = os.path.join('static', 'media', f_name)
+    img.save(path_file)
+    resize(path_file)
+    return f_name
 
 
 @login_manager.user_loader
@@ -80,11 +123,12 @@ def create_vote():
     form = AddVoteForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        vote = Vote()
-        vote.author_id = flask_login.current_user.id
-        vote.title = form.title.data
-        vote.description = form.description.data
-        vote.stop_date = form.stop_date.data
+        vote = Vote(
+            author_id=flask_login.current_user.id,
+            title=form.title.data,
+            description=form.description.data,
+            stop_date=form.stop_date.data
+        )
         if form.groups.data != 'all':
             vote.groups.append(db_sess.query(Group).filter(Group.title == str(form.groups.data)).first())
         db_sess.add(vote)
@@ -116,7 +160,7 @@ def vote_detail(vote_id):
         db_sess.commit()
         if form.add_question.data:
             return redirect(url_for('create_question', vote_id=vote_id))
-        return redirect(url_for('publish', vote_id=vote_id))
+        # return redirect(url_for('publish', vote_id=vote_id))
     return render_template('vote_detail.html', form=form)
 
 
@@ -125,14 +169,13 @@ def create_question(vote_id):
     form = AddQuestionForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        question = Question()
-        question.vote_id = vote_id
-        question.text = form.text.data
-        if form.file.data:
-            img_name = datetime.datetime.now().strftime('%Y%b%d_%H%M%S')
-            with open(f'static/imgs/{img_name}.png', 'wb') as output:
-                output.write(form.file.data.read())
-            question.icon = f'{img_name}.png'
+        question = Question(
+            vote_id=vote_id,
+            text=form.text.data
+        )
+        if form.img.data:
+            f_name = get_image(form)
+            question.icon = f_name
         db_sess.add(question)
         db_sess.commit()
         return redirect(url_for('question_detail',
@@ -151,17 +194,18 @@ def question_detail(question_id):
     )
     form.text.label.text = 'Добавить'
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         question.text = form.text.data
-        if form.file.data:
-            img_name = datetime.datetime.now().strftime('%Y%b%d_%H%M%S')
-            with open(f'static/img/{img_name}.png', 'wb') as output:
-                output.write(form.file.data.read())
-            question.icon = f'{img_name}.png'
+        db_sess = db_session.create_session()
+        if form.img.data:
+            f_name = get_image(form)
+            question.icon = f_name
         db_sess.add(question)
         db_sess.commit()
         if form.add_answer.data:
+            question.type = Question.RADIO
             return redirect(url_for('create_answer', question_id=question_id))
+        if not question.type:
+            question.type = Question.SHORT
         return redirect(url_for('vote_detail', vote_id=question.vote.id))
     return render_template('question_detail.html', form=form)
 
@@ -171,20 +215,17 @@ def create_answer(question_id):
     form = AddAnswerForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        answer = Answer()
-        answer.question_id = question_id
-        if form.file.data:
-            img_name = datetime.datetime.now().strftime('%Y%b%d_%H%M%S')
-            with open(f'static/imgs/{img_name}.png', 'wb') as output:
-                output.write(form.file.data.read())
-            question.icon = f'{img_name}.png'
-        db_sess.add(question)
+        answer = Answer(
+            question_id=question_id,
+            text=form.text
+        )
+        if form.img.data:
+            f_name = get_image(form)
+            answer.icon = f_name
+        db_sess.add(answer)
         db_sess.commit()
-        return redirect(url_for('question_detail',
-                                question_id=question.id,
-                                question_icon=question.icon,
-                                answers=question.answers))
-    return render_template('create_question.html', form=form)
+        return redirect(url_for('question_detail'),question_id )
+    return render_template('create_answer.html', form=form)
 
 
 def publish(vote_id):
