@@ -1,24 +1,18 @@
-import logging
 from telegram.ext import Updater, MessageHandler, Filters
 from telegram.ext import CommandHandler
 from telegram import ReplyKeyboardMarkup
 from db_data import db_session
 from db_data.__all_models import User
+import requests
 
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
-
-logger = logging.getLogger(__name__)
 
 TOKEN = '5375409769:AAEVGJVIRF80jcYYr2DkWojMoGdR9wp8qCU'
 REQUEST_KWARGS = {'proxy_url': 'socks5://ip:port'}
 
-reply_keyboard = [['Сайт "Голосовалка 1357"']]
+reply_keyboard = [['/site']]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True)
 
-
-def site(update, context):
-    update.message.reply_text("Ссылочка")
+group = 1
 
 
 def start(update, context):
@@ -26,6 +20,10 @@ def start(update, context):
 Для получения уведомления о появлении новой голосовалки необходимо авторизоваться.
 На первой строке введите почту, которую вы указывали при регистрации на сайте, на второй - пароль.''',
                               reply_markup=markup)
+
+
+def site(update, context):
+    update.message.reply_text('Ссылочка')
 
 
 def authorization(update, context):
@@ -47,6 +45,34 @@ def authorization(update, context):
         else:
             update.message.reply_text(
                 'На первой строке введите почту, которую вы указывали при регистрации на сайте, на второй - пароль.')
+    else:
+        update.message.reply_text(
+            'На первой строке введите почту, которую вы указывали при регистрации на сайте, на второй - пароль.')
+
+
+# def newvote(context):
+#     request = request_new_votes()
+#     for i in request:
+#
+#     job = context.job
+#     context.bot.send_message(job.context, text='Ура! Появилась новая голосовалка!')
+#
+#
+# def set_timer(update, context):
+#     chat_id = update.message.chat_id
+#     try:
+#         due = int(context.args[300])
+#         context.job_queue.run_once(newvote, due, context=chat_id, name=str(chat_id))
+#
+#     except (IndexError, ValueError):
+#         update.message.reply_text('Использование: /set <секунд>')
+
+
+def request_new_votes():
+    request = 'http://192.168.2.20:8000/api/newvotes'
+    response = requests.get(request)
+    request_json = response.json()
+    return request_json
 
 
 def main():
