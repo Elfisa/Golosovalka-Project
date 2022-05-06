@@ -9,6 +9,7 @@ from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.add_vote_form import AddVoteForm
 from forms.add_question_form import AddQuestionForm
+from forms.add_answer_form import AddAnswerForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -163,6 +164,27 @@ def question_detail(question_id):
             return redirect(url_for('create_answer', question_id=question_id))
         return redirect(url_for('vote_detail', vote_id=question.vote.id))
     return render_template('question_detail.html', form=form)
+
+
+@app.route('/create_answer/<question_id>', methods=['GET', 'POST'])
+def create_answer(question_id):
+    form = AddAnswerForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        answer = Answer()
+        answer.question_id = question_id
+        if form.file.data:
+            img_name = datetime.datetime.now().strftime('%Y%b%d_%H%M%S')
+            with open(f'static/imgs/{img_name}.png', 'wb') as output:
+                output.write(form.file.data.read())
+            question.icon = f'{img_name}.png'
+        db_sess.add(question)
+        db_sess.commit()
+        return redirect(url_for('question_detail',
+                                question_id=question.id,
+                                question_icon=question.icon,
+                                answers=question.answers))
+    return render_template('create_question.html', form=form)
 
 
 def publish(vote_id):
