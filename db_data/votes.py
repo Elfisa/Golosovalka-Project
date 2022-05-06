@@ -24,6 +24,8 @@ class Vote(SqlAlchemyBase, SerializerMixin):
     description = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=dt.datetime.now())
     stop_date = sqlalchemy.Column(sqlalchemy.DateTime, default=dt.datetime.now())
+    is_published = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    is_hidden = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
     author_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
     author = orm.relation('User')

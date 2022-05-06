@@ -24,7 +24,7 @@ class Group(SqlAlchemyBase, SerializerMixin):
     TEACHER = 3
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.Integer)
+    title = sqlalchemy.Column(sqlalchemy.Integer, index=True)
     token = sqlalchemy.Column(sqlalchemy.String, default=str(uuid1()))
 
     votes = orm.relation("Vote",

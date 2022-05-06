@@ -1,0 +1,10 @@
+{% extends "create_question.html" %}
+
+{% block detail %}
+<div>
+    {{ form.add_answer(type="submit", class="btn green_btn") }}
+    {% if not questions.answers %}
+    (Вопросы без добавленных вариантов ответа автоматически становятся вопросами с кратким ответом)
+    {% endif %}
+</div>
+{% endblock %}
