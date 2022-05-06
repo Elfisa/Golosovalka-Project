@@ -1,12 +1,14 @@
-from flask import redirect, render_template, jsonify, make_response, Flask, session
+import datetime
+import flask_login
+from flask import redirect, render_template, jsonify, make_response, Flask, session, url_for
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_restful import Api, Resource, abort
 from db_data import db_session
 from db_data.__all_models import User, Group, Vote, Question, Answer
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-from forms.vote_form import VoteForm
-from forms.question_form import QuestionForm
+from forms.add_vote_form import AddVoteForm
+from forms.add_question_form import AddQuestionForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -72,36 +74,102 @@ def run():
     return render_template('index.html', votes=db_sess.query(Vote).all())
 
 
-@app.route('/create/<vote_id>', methods=['GET', 'POST'])
-def create(vote_id):
-    db_sess = db_session.create_session()
-    form = VoteForm()
+@app.route('/create_vote', methods=['GET', 'POST'])
+def create_vote():
+    form = AddVoteForm()
     if form.validate_on_submit():
-        print(form.stop_date.data)
-        print(vote_id)
-        vote = db_sess.query(Vote).get(vote_id)
+        db_sess = db_session.create_session()
+        vote = Vote()
+        vote.author_id = flask_login.current_user.id
         vote.title = form.title.data
         vote.description = form.description.data
-        db_sess.commit()
-        if form.add.data:
-            question = Question()
-            db_sess.add(question)
-            vote.questions.append(question)
-            db_sess.commit()
-            return redirect(f'/create/{vote.id}/add/{question.id}')
-        return redirect('/')
-    if vote_id == 'new':
-        vote = Vote()
+        vote.stop_date = form.stop_date.data
+        if form.groups.data != 'all':
+            vote.groups.append(db_sess.query(Group).filter(Group.title == str(form.groups.data)).first())
         db_sess.add(vote)
         db_sess.commit()
-        vote_id = vote.id
-    return render_template('create.html', form=form, vote_id=vote_id)
+        return redirect(url_for('vote_detail', vote_id=vote.id))
+    return render_template('create_vote.html', form=form)
 
 
-@app.route('/create/<vote_id>/add_question/<question_id>', methods=['GET', 'POST'])
-def add_question(vote_id, question_id):
-    form = QuestionForm()
-    return render_template('add_question.html', form=form)
+@app.route('/vote_detail/<vote_id>', methods=['GET', 'POST'])
+def vote_detail(vote_id):
+    db_sess = db_session.create_session()
+    vote = db_sess.query(Vote).get(vote_id)
+    groups = 'all' if not vote.groups else vote.groups.pop().title
+    form = AddVoteForm(
+        title=vote.title,
+        description=vote.description,
+        groups=groups,
+        stop_date=vote.stop_date
+    )
+    if not vote.is_published:
+        form.submit.label.text = 'Опубликовать'
+    if form.validate_on_submit():
+        vote.title = form.title.data
+        vote.description = form.description.data
+        vote.stop_date = form.stop_date.data
+        if form.groups.data != 'all':
+            vote.groups.append(db_sess.query(Group).filter(Group.title == str(form.groups.data)).first())
+        db_sess.add(vote)
+        db_sess.commit()
+        if form.add_question.data:
+            return redirect(url_for('create_question', vote_id=vote_id))
+        return redirect(url_for('publish', vote_id=vote_id))
+    return render_template('vote_detail.html', form=form)
+
+
+@app.route('/create_question/<vote_id>', methods=['GET', 'POST'])
+def create_question(vote_id):
+    form = AddQuestionForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        question = Question()
+        question.vote_id = vote_id
+        question.text = form.text.data
+        if form.file.data:
+            img_name = datetime.datetime.now().strftime('%Y%b%d_%H%M%S')
+            with open(f'static/imgs/{img_name}.png', 'wb') as output:
+                output.write(form.file.data.read())
+            question.icon = f'{img_name}.png'
+        db_sess.add(question)
+        db_sess.commit()
+        return redirect(url_for('question_detail',
+                                question_id=question.id,
+                                question_icon=question.icon,
+                                answers=question.answers))
+    return render_template('create_question.html', form=form)
+
+
+@app.route('/question_detail/<question_id>', methods=['GET', 'POST'])
+def question_detail(question_id):
+    db_sess = db_session.create_session()
+    question = db_sess.query(Question).get(question_id)
+    form = AddQuestionForm(
+        text=question.text
+    )
+    form.text.label.text = 'Добавить'
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        question.text = form.text.data
+        if form.file.data:
+            img_name = datetime.datetime.now().strftime('%Y%b%d_%H%M%S')
+            with open(f'static/img/{img_name}.png', 'wb') as output:
+                output.write(form.file.data.read())
+            question.icon = f'{img_name}.png'
+        db_sess.add(question)
+        db_sess.commit()
+        if form.add_answer.data:
+            return redirect(url_for('create_answer', question_id=question_id))
+        return redirect(url_for('vote_detail', vote_id=question.vote.id))
+    return render_template('question_detail.html', form=form)
+
+
+def publish(vote_id):
+    db_sess = db_session.create_session()
+    vote = db_sess.query(Vote).get(vote_id)
+    vote.is_published = True
+    return redirect(url_for('vote_detail', vote_id=vote_id))
 
 
 def main():

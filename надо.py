@@ -1,4 +1,8 @@
-from uuid import uuid1
+import datetime as dt
 
-print(type(uuid1()))
-# style="background-color: #fbf7ea"
+print(dt.datetime.now())
+
+# if form.short_answer.data:
+#     return redirect(url_for('add_question_short_answer'))
+# if form.radio_answer.data:
+#     return redirect(url_for('add_question_radio_answer'))

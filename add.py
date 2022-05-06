@@ -84,6 +84,18 @@ def add():
 #     print(user.id)
 # for user in users:
 #     user.icon = 'static/imgs/default.png'
+
+# for user in db_sess.query(User).all():
+#     user.role = int(user.role)
+#     print([user.role])
+#     db_sess.commit()
+#     print([user.role])
+#
+# for group in db_sess.query(Group).all():
+#     group.title = int(group.title)
+#     db_sess.commit()
+#
+# db_sess.commit()
+
 for vote in db_sess.query(Vote).all():
-    print(vote.title)
-    print(1)
+    print(vote.is_published)

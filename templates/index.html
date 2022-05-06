@@ -2,11 +2,11 @@
 
 {% block content %}
 {% for vote in votes%}
-<div class="col-md6 border border-secondary rounded-pill mt-4 p-5">
+{% if vote.is_published and not vote.is_hidden and current_user.group in vote.groups %}
+<div class="col-md6 border border-secondary rounded-pill my-4 p-5">
     <h3>{{vote.title}}</h3>
     <div>
         <h6>{{vote.description}}</h6>
-        <img src="{{vote.icon}}" alt="">
     </div>
     <div>
         Начало: {{vote.formatted_start}}     До: {{vote.formatted_stop}}
@@ -20,7 +20,8 @@
             Удалить
         </a>
     </div>
-{% endif %}
+    {% endif %}
+    {% endif %}
 </div>
 {% endfor %}
 {% endblock %}
