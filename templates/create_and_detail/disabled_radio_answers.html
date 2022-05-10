@@ -1,0 +1,13 @@
+<div class="col">
+    {% for answer in question.answers %}
+    <div class="row my-5 mx-5">
+        <input class="form-check-input" type="radio" disabled>
+        <label class="form-check-label mx-3">
+            {{ answer.text }}
+        </label><br>
+        {% if answer.icon %}
+        <img src="{{ url_for('static', filename='/imgs/' + answer.icon) }}">
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>

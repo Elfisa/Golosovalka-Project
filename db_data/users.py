@@ -26,6 +26,15 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     passed_votes = orm.relation("Vote",
                                 secondary="users_to_votes",
                                 back_populates="voters")
+    answers = orm.relation("Answer",
+                           secondary="users_to_answers",
+                           back_populates="voters")
+
+    @property
+    def ru_role(self):
+        return 'Пользователь' if int(self.role) == self.USER \
+            else 'Модератор' if int(self.role) == self.MODERATOR \
+            else 'Админ'
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

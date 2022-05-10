@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-center my-5"> {{ title }} </h1>
+<div class="col">
+    {% for user in users %}
+    <div class="row my-4 p-3 border border-secondary rounded-pill">
+        <div class="col">
+            <h5> {{ user.email }} </h5>
+        </div>
+        <div class="col">
+            {{ user.ru_role }}
+        </div>
+        {% if not user.is_admin %}
+        <div class="col">
+            <a class="btn green_btn" href="{{ url_for('change_role', user_id=user.id, new_role=object.ADMIN) }}">
+                Сделать Админом
+            </a>
+        </div>
+        {% endif %}
+        {% if not user.is_moderator %}
+        <div class="col">
+            <a class="btn green_btn" href="{{ url_for('change_role', user_id=user.id, new_role=object.MODERATOR) }}">
+                Сделать модератором
+            </a>
+        </div>
+        {% endif %}
+        {% if user.is_moderator or user.is_admin %}
+        <div class="col">
+            <a class="btn green_btn" href="{{ url_for('change_role', user_id=user.id, new_role=object.USER) }}">
+                Убрать особую роль
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

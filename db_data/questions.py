@@ -15,6 +15,7 @@ class Question(SqlAlchemyBase, SerializerMixin):
     text = sqlalchemy.Column(sqlalchemy.Text)
     type = sqlalchemy.Column(sqlalchemy.Integer)
     icon = sqlalchemy.Column(sqlalchemy.String)
+    answer = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     settings = sqlalchemy.Column(sqlalchemy.JSON, nullable=True)
 
     vote_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('votes.id'))

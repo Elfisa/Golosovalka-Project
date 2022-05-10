@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for vote in votes%}
+{% if not vote.groups or current_user.group in vote.groups %}
+<div class="col-md6 border border-secondary rounded-pill my-4 p-5">
+    <div class="my-3">
+        <h3>{{vote.title}}</h3>
+        <div class="mx-4">
+            <h6>{{vote.description}}</h6>
+        </div>
+        <div>
+            Начало: {{vote.formatted_start}}     До: {{vote.formatted_stop}}
+        </div>
+        <div class="my-2">
+            <a href="/results/{{ vote.id }}" class="btn green_btn">
+                Результаты
+            </a>
+            {% if current_user.is_authenticated and (current_user.is_admin or current_user.is_moderator and vote.author_id == current_user.id) %}
+            <a href="/vote_detail/{{ vote.id }}" class="btn btn-warning">
+                Изменить
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

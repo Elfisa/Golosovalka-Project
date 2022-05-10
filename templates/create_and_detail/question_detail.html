@@ -1,0 +1,17 @@
+{% extends "create_and_detail/create_question_or_answer.html" %}
+
+{% block detail %}
+<div>
+    {% if not question.answers %}
+    <div class="alert alert-success my-1" role="alert">
+        Вопросы без добавленных вариантов ответа автоматически становятся вопросами с кратким ответом
+    </div>
+    {% else %}
+    <div class="my-3">Варианты ответа:</div>
+        {% include 'create_and_detail/disabled_radio_answers.html' %}
+    {% endif %}
+</div>
+<div>
+    {{ form.add_answer(type="submit", class="btn green_btn my-2") }}
+</div>
+{% endblock %}

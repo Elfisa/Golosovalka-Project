@@ -1,0 +1,22 @@
+{% extends "create_and_detail/create_vote.html" %}
+
+{% block detail %}
+{% for question in vote.questions %}
+<div class="col-md6 border border-secondary rounded my-4 mx-4 p-5">
+    <div class="row">
+        <div class="col-sm my-auto mx-auto">
+            <h3>{{ question.text }}</h3>
+        </div>
+        {% if question.icon %}
+        <div class="col-sm">
+            <img src="{{ url_for('static', filename='/imgs/' + question.icon) }}">
+        </div>
+        {% endif %}
+    </div>
+    {% if question.answers %}
+    {% include 'create_and_detail/disabled_radio_answers.html' %}
+    {% endif %}
+</div>
+{% endfor %}
+<div class="my-4">{{ form.add_question(type="submit", class="btn green_btn") }}</div>
+{% endblock %}

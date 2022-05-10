@@ -3,6 +3,7 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
 import datetime as dt
+from .questions import Question
 
 
 users_to_votes = sqlalchemy.Table(
@@ -39,6 +40,20 @@ class Vote(SqlAlchemyBase, SerializerMixin):
                           back_populates="votes")
 
     questions = orm.relation('Question', back_populates='vote')
+
+    @property
+    def answers(self):
+        for question in self.questions:
+            if question.answer:
+                return True
+            for answer in question.answers:
+                if answer.voters:
+                    return True
+        return False
+
+    @property
+    def is_finished(self):
+        return dt.datetime.now() >= self.stop_date
 
     @property
     def formatted_start(self):

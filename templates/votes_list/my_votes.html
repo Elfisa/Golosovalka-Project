@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for vote in votes%}
+<div class="col-md6 border border-secondary rounded-pill my-4 p-5">
+    <div class="m-3">
+        <h3>{{vote.title}}</h3>
+        <div class="mx-4">
+            <h6>{{vote.description}}</h6>
+        </div>
+        <div>
+            Начало: {{vote.formatted_start}}     До: {{vote.formatted_stop}}
+        </div>
+        <div class="my-2">
+            {% if not vote.groups or current_user.group in vote.groups %}
+            <a href="/vote/{{ vote.id }}" class="btn green_btn">
+                Проголосовать
+            </a>
+            {% endif %}
+            <a href="/vote_detail/{{ vote.id }}" class="btn btn-warning">
+                Изменить
+            </a>
+            {% if vote.is_finished %}
+            <a href="/results/{{ vote.id }}" class="btn green_btn">
+                Результаты
+            </a>
+            {% else %}
+            <a href="/results/{{ vote.id }}" class="btn dark_green_btn">
+                Досрочные результаты
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

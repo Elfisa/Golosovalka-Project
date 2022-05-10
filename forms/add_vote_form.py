@@ -12,5 +12,8 @@ class AddVoteForm(FlaskForm):
     groups = RadioField('Это голосование для...',
                         choices=[('all', 'всех'), (Group.STUDENT, 'учеников'),
                                  (Group.PARENT, 'родителей'), (Group.TEACHER, 'учителей')])
-    submit = SubmitField('Сохранить')
+    save = SubmitField('Сохранить изменения')
+    publish = SubmitField('Опубликовать')
+    hide = SubmitField('Скрыть')
+    delete = SubmitField('Удалить')
     add_question = SubmitField('Добавить вопрос')

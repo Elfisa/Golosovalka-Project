@@ -97,5 +97,14 @@ def add():
 #
 # db_sess.commit()
 
-for vote in db_sess.query(Vote).all():
-    print(vote.is_published)
+current_user = db_sess.query(User).get(6)
+group = current_user.group
+# for vote in db_sess.query(Vote).filter(Vote.is_published,
+#                                        not Vote.is_hidden,
+#                                        not Vote.is_finished,
+#                                        current_user.group in Vote.groups,
+#                                        current_user not in Vote.voters).all():
+for vote in db_sess.query(Vote).filter(Vote.is_published,
+                                       ~Vote.is_hidden,
+                                       Vote.is_finished == True).all():
+    print(vote.id)
